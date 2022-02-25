@@ -3,23 +3,19 @@ const path = require('path');
 
 
 const storage = (sampleFile,folder) => {   
-  let dir = path.join(__dirname, `${folder}`);
-  if (!fs.existsSync('./poster/')) {
-      fs.mkdirSync('./poster/');
-  }
-  if (!fs.existsSync('./uploads/')) {
-      fs.mkdirSync('./uploads/');
+  let dir = path.join(__dirname,'../public/uploads', `${folder}`);
+
+  if (!fs.existsSync('./public/uploads/')) {
+      fs.mkdirSync('./public/uploads/');
   }
 
   if (!fs.existsSync(dir)){
       fs.mkdirSync(dir);
   }
-  let name =  Date.now() + '_' + sampleFile.name;
+  let name =  Date.now() + '_' + sampleFile.originalname;
   let uploadPath = path.join(dir,name);
-  sampleFile.mv(uploadPath, function(err) {
-      if (err)
-          return res.status(500).json({ success: false, message: [], error: 'Internal Server Error' });
-  });
+
+  console.log(sampleFile)
   return  `${folder}`.replace('../',"") +'/' + name;
 }
 
@@ -35,10 +31,13 @@ exports.uploadSingleFile = (req,res,next) => {
     sampleFile = req.files[0];
     if(sampleFile.mimetype === 'image/png' || sampleFile.mimetype === 'image/jpg' || sampleFile.mimetype === 'image/jpeg'){
       errors = false;
+      storage(sampleFile,'images')
+      // console.log(sampleFile)
+
     }else{
       errorMessage.message = "photo field is type of image";
     }
-    console.log("upload file",sampleFile)
+   
   }else if(req.files.length === 0){
     errorMessage.message = "photo field is required";
   }else if(req.files.length > 1){

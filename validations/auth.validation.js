@@ -40,7 +40,7 @@ exports.signupValidation = [
     .isEmpty()
     .withMessage("Password field is  required"),
     (req,res,next) => {
-      
+        req.body.fieldName = 'photo';
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
            return res.status(400).json({ success: false, message: "Validator Error", data: errors.array() });

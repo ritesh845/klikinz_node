@@ -1,17 +1,16 @@
 const express = require('express');
-const bodyParser = require('body-parser');
+const fileUpload = require("express-fileupload");
 const cors = require('cors');
-const multer = require("multer");
 require('dotenv').config();
 const app = express();
 const port = process.env.PORT  || 5000; 
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use(fileUpload());
 app.use(cors());
-app.use(multer().any());
-
-
 
 const authRoutes = require('./routes/auth.routes');
 app.use('/api',authRoutes);
