@@ -1,4 +1,5 @@
 const { check,checkSchema, validationResult }= require('express-validator');
+const path = require('path');
 
 exports.loginValidation = [
     check('email')
@@ -39,8 +40,19 @@ exports.signupValidation = [
     .not()
     .isEmpty()
     .withMessage("Password field is  required"),
+    check('photo')
+    .custom((value, {req}) => {
+        if(!req.files){  
+            throw new Error("Photo field is required");  
+        }      
+        let allowedImageExtension = ['.png','.jpg','.jpeg'];
+        var extensionName = (path.extname(req.files.photo.name)).toLowerCase();
+        if(!allowedImageExtension.includes(extensionName)){
+            throw new Error("Please upload an image jpg, jpeg, png");
+        }  
+        return extensionName;
+    }),
     (req,res,next) => {
-        req.body.fieldName = 'photo';
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
            return res.status(400).json({ success: false, message: "Validator Error", data: errors.array() });

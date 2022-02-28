@@ -1,3 +1,4 @@
+const  {storage} = require('../middleware/uploadFile');
 
 exports.login = (req,res) => {
     console.log(req.body);
@@ -5,6 +6,7 @@ exports.login = (req,res) => {
 }
 
 exports.emailSignUp = (req,res) => {
-    console.log("controllers",req.body);
+    var filePath =  storage(req.files.photo,'images')
+    console.log(filePath);
     return res.status(200).json({status: "success", code : 200, message: "Signup successfully", data:[]});
 }
